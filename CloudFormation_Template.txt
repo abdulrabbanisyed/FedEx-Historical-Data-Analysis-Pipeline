@@ -1,0 +1,40 @@
+# infrastructure/cloudformation.yaml
+Resources:
+  # Previous resources remain the same...
+
+  # SNS Topic for Pipeline Notifications
+  PipelineNotificationTopic:
+    Type: 'AWS::SNS::Topic'
+    Properties:
+      TopicName: 'fedex-pipeline-notifications'
+      DisplayName: 'FedEx Pipeline Alerts'
+
+  # SNS Topic Policy
+  PipelineNotificationTopicPolicy:
+    Type: 'AWS::SNS::TopicPolicy'
+    Properties:
+      Topics:
+        - !Ref PipelineNotificationTopic
+      PolicyDocument:
+        Version: '2010-09-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+                - glue.amazonaws.com
+            Action: 'sns:Publish'
+            Resource: !Ref PipelineNotificationTopic
+
+  # Email Subscription
+  EmailSubscription:
+    Type: 'AWS::SNS::Subscription'
+    Properties:
+      TopicArn: !Ref PipelineNotificationTopic
+      Protocol: 'email'
+      Endpoint: !Ref NotificationEmail
+
+Parameters:
+  NotificationEmail:
+    Type: String
+    Description: 'Email address for pipeline notifications'
