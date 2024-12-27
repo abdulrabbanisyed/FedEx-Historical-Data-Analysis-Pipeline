@@ -1,0 +1,21 @@
+# config/glue_config.json
+{
+    "job_name": "shipment_etl",
+    "source_database": "fedex_shipping",
+    "target_database": "fedex_analytics",
+    "s3": {
+        "raw_data_bucket": "fedex-raw-data",
+        "processed_data_bucket": "fedex-processed-data",
+        "temp_directory": "temp/"
+    },
+    "redshift": {
+        "cluster_identifier": "fedex-analytics-cluster",
+        "database_name": "fedex_analytics",
+        "port": 5439
+    },
+    "data_validation": {
+        "enable_quality_checks": true,
+        "minimum_record_count": 1000,
+        "maximum_null_percentage": 5
+    }
+}
